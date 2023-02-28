@@ -15,15 +15,10 @@ if (process.env.OTEL_LOG_LEVEL) {
 }
 
 const { start } = require('@splunk/otel');
-const { getInstrumentations } = require('@splunk/otel/instrumentations');
 
 start({
   serviceName: 'clodter_pacman',
   metrics: true,
   profiling: true,
-  tracing: {
-    instrumentations: [
-      getInstrumentations(),
-    ]
-  },
+  tracing: {},
 });
