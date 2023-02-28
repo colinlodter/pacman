@@ -6,6 +6,14 @@ var Database = require('./lib/database');
 var assert = require('assert');
 
 // Constants
+// Splunk Distribution of OpenTelemetry JS
+
+const { context, trace } = require('@opentelemetry/api');
+
+// A span must already exist in the context
+
+const span = trace.getSpan(context.active());
+
 
 // Routes
 var highscores = require('./routes/highscores');
@@ -49,8 +57,10 @@ app.use(function(err, req, res, next) {
 
 Database.connect(app, function(err) {
     if (err) {
+        span.setAttribute('databaseAccesible', 'false');
         console.log('Failed to connect to database server');
     } else {
+        span.setAttribute('databaseAccesible', 'true');
         console.log('Connected to database server successfully');
     }
 
