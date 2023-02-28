@@ -1,7 +1,4 @@
-FROM node:boron
-
-ENV OTEL_SERVICE_NAME=clodter_pacman
-ENV OTEL_RESOURCE_ATTRIBUTES='deployment.environment=clodter_dev,service.version=1.0.0'
+FROM node:fermium
 
 # Create app directory
 RUN mkdir -p /usr/src/app
