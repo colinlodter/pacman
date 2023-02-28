@@ -3,6 +3,12 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var Database = require('../lib/database');
 
+// Splunk Distribution of OpenTelemetry JS
+const { context, trace } = require('@opentelemetry/api');
+
+// A span must already exist in the context
+const span = trace.getSpan(context.active());
+
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -50,8 +56,11 @@ router.post('/', urlencodedParser, function(req, res, next) {
 
     Database.getDb(req.app, function(err, db) {
         if (err) {
+            span.setAttribute('databaseAccesible', 'false');
             return next(err);
         }
+
+        span.setAttribute('databaseAccesible', 'true');
 
         // Insert high score with extra user data
         db.collection('highscore').insertOne({
