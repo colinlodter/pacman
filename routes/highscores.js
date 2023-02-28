@@ -17,9 +17,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    const meter = opentelemetry.metrics.getMeter('mongodb');
-    const counter = meter.createCounter('inaccesible');
-    const span = tracer.startSpan('/', { 'kind':opentelemetry.SpanKind.SERVER });
+    const span = tracer.startSpan('/highscores/list', { 'kind':opentelemetry.SpanKind.SERVER });
     console.log('[GET /highscores/list]');
     Database.getDb(req.app, function(err, db) {
         if (err) {
@@ -47,13 +45,13 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             res.json(result);
         });
     });
+
+    span.end();
 });
 
 // Accessed at /highscores
 router.post('/', urlencodedParser, function(req, res, next) {
-    const meter = metrics.getMeter('mongodb');
-    const counter = meter.createCounter('inaccesible');
-    const span = tracer.startSpan('/', { 'kind':opentelemetry.SpanKind.SERVER });
+    const span = tracer.startSpan('/highscores', { 'kind':opentelemetry.SpanKind.SERVER });
     console.log('[POST /highscores] body =', req.body,
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
