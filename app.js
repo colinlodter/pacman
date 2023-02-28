@@ -52,17 +52,17 @@ app.use(function(err, req, res, next) {
 });
 
 Database.connect(app, function(err) {
-    const span = tracer.startSpan('databaseConnect', { 'kind':opentelemetry.SpanKind.SERVER });
+    const span = tracer.getActiveSpan('DatabaseConnect', {
+        if (err) {
+            span.setAttribute('databaseAccesible', 'false');
+            console.log('Failed to connect to database server');
+        } else {
+            span.setAttribute('databaseAccesible', 'true');
+            console.log('Connected to database server successfully');
+        }
 
-    if (err) {
-        span.setAttribute('databaseAccesible', 'false');
-        console.log('Failed to connect to database server');
-    } else {
-        span.setAttribute('databaseAccesible', 'true');
-        console.log('Connected to database server successfully');
-    }
-
-    span.end();
+        span.end();
+    })
 });
 
 module.exports = app;
