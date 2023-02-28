@@ -14,4 +14,16 @@ if (process.env.OTEL_LOG_LEVEL) {
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel[process.env.OTEL_LOG_LEVEL]);
 }
 
-const tracer = require('@splunk/otel').startTracing();
+const { start } = require('@splunk/otel');
+const { getInstrumentations } = require('@splunk/otel/instrumentations');
+
+start({
+  serviceName: 'clodter_pacman',
+  metrics: true,
+  profiling: true,
+  tracing: {
+    instrumentations: [
+      getInstrumentations(),
+    ]
+  },
+});
