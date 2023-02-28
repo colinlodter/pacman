@@ -8,12 +8,8 @@ var assert = require('assert');
 // Constants
 // Splunk Distribution of OpenTelemetry JS
 
-const { context, trace } = require('@opentelemetry/api');
-
-// A span must already exist in the context
-
-const span = trace.getSpan(context.active());
-
+const opentelemetry = require('@opentelemetry/api');
+const tracer = opentelemetry.trace.getTracer('clodter_pacman');
 
 // Routes
 var highscores = require('./routes/highscores');
@@ -56,6 +52,8 @@ app.use(function(err, req, res, next) {
 });
 
 Database.connect(app, function(err) {
+    const span = tracer.startSpan('databaseConnect', { 'kind':opentelemetry.SpanKind.SERVER });
+
     if (err) {
         span.setAttribute('databaseAccesible', 'false');
         console.log('Failed to connect to database server');
@@ -64,6 +62,7 @@ Database.connect(app, function(err) {
         console.log('Connected to database server successfully');
     }
 
+    span.end();
 });
 
 module.exports = app;

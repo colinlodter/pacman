@@ -4,10 +4,8 @@ var bodyParser = require('body-parser');
 var Database = require('../lib/database');
 
 // Splunk Distribution of OpenTelemetry JS
-const { context, trace } = require('@opentelemetry/api');
-
-// A span must already exist in the context
-const span = trace.getSpan(context.active());
+const opentelemetry = require('@opentelemetry/api');
+const tracer = opentelemetry.trace.getTracer('clodter_pacman');
 
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -46,6 +44,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
 
 // Accessed at /highscores
 router.post('/', urlencodedParser, function(req, res, next) {
+    const span = tracer.startSpan('/', { 'kind':opentelemetry.SpanKind.SERVER });
     console.log('[POST /highscores] body =', req.body,
                 ' host =', req.headers.host,
                 ' user-agent =', req.headers['user-agent'],
@@ -99,6 +98,8 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 });
             });
     });
+
+    span.end();
 });
 
 module.exports = router;
