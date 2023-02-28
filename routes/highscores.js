@@ -5,7 +5,6 @@ var Database = require('../lib/database');
 
 // Splunk Distribution of OpenTelemetry JS
 const opentelemetry = require('@opentelemetry/api');
-const { metrics } = require('@opentelemetry/api-metrics');
 const tracer = opentelemetry.trace.getTracer('clodter_pacman');
 
 // create application/x-www-form-urlencoded parser
@@ -18,7 +17,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    const meter = metrics.getMeter('mongodb');
+    const meter = opentelemetry.metrics.getMeter('mongodb');
     const counter = meter.createCounter('inaccesible');
     const span = tracer.startSpan('/', { 'kind':opentelemetry.SpanKind.SERVER });
     console.log('[GET /highscores/list]');
