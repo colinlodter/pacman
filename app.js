@@ -52,7 +52,7 @@ app.use(function(err, req, res, next) {
 });
 
 Database.connect(app, function(err) {
-    const span = tracer.getActiveSpan('DatabaseConnect', {
+    tracer.startActiveSpan('DatabaseConnect', (span) => {
         if (err) {
             span.setAttribute('databaseAccesible', 'false');
             console.log('Failed to connect to database server');
