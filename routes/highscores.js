@@ -18,17 +18,17 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    // tracer.startActiveSpan('/highscores/list', (span) => {
+    tracer.startActiveSpan('/highscores/list', (span) => {
         console.log('[GET /highscores/list]');
         Database.getDb(req.app, function(err, db) {
             if (err) {
-                // span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
-                // span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
-                // span.setAttribute('database.accesible', 'false');
+                span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
+                span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
+                span.setAttribute('database.accesible', 'false');
                 return next(err);
             }
 
-            // span.setAttribute('database.accesible', 'true');
+            span.setAttribute('database.accesible', 'true');
 
             // Retrieve the top 10 high scores
             var col = db.collection('highscore');
@@ -48,13 +48,13 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             });
         });
 
-        // span.end();
-    // })
+        span.end();
+    })
 });
 
 // Accessed at /highscores
 router.post('/', urlencodedParser, function(req, res, next) {
-    // tracer.startActiveSpan('/highscores', (span) => {
+    tracer.startActiveSpan('/highscores', (span) => {
         console.log('[POST /highscores] body =', req.body,
                     ' host =', req.headers.host,
                     ' user-agent =', req.headers['user-agent'],
@@ -65,13 +65,13 @@ router.post('/', urlencodedParser, function(req, res, next) {
 
         Database.getDb(req.app, function(err, db) {
             if (err) {
-                // span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
-                // span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
-                // span.setAttribute('database.accesible', 'false');
+                span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
+                span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
+                span.setAttribute('database.accesible', 'false');
                 return next(err);
             }
 
-            // span.setAttribute('database.accesible', 'true');
+            span.setAttribute('database.accesible', 'true');
 
             // Insert high score with extra user data
             db.collection('highscore').insertOne({
@@ -111,8 +111,8 @@ router.post('/', urlencodedParser, function(req, res, next) {
                 });
         });
 
-        // span.end();
-    // })
+        span.end();
+    })
 });
 
 module.exports = router;

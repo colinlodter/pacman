@@ -52,19 +52,19 @@ app.use(function(err, req, res, next) {
 });
 
 Database.connect(app, function(err) {
-    // tracer.startActiveSpan('DatabaseConnect', (span) => {
+    tracer.startActiveSpan('DatabaseConnect', (span) => {
         if (err) {
-            // span.setAttribute('database.accesible', 'false');
-            // span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
-            // span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
+            span.setAttribute('database.accesible', 'false');
+            span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
+            span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
             console.log('Failed to connect to database server');
         } else {
-            // span.setAttribute('database.accesible', 'true');
+            span.setAttribute('database.accesible', 'true');
             console.log('Connected to database server successfully');
         }
 
-        // span.end();
-    // })
+        span.end();
+    })
 });
 
 module.exports = app;
