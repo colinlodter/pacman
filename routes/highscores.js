@@ -23,6 +23,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
         Database.getDb(req.app, function(err, db) {
             if (err) {
                 span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
+                span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
                 span.setAttribute('databaseAccesible', 'false');
                 return next(err);
             }
@@ -65,6 +66,7 @@ router.post('/', urlencodedParser, function(req, res, next) {
         Database.getDb(req.app, function(err, db) {
             if (err) {
                 span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
+                span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
                 span.setAttribute('databaseAccesible', 'false');
                 counter.add(1);
                 return next(err);

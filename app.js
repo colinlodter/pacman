@@ -55,6 +55,7 @@ Database.connect(app, function(err) {
     tracer.startActiveSpan('DatabaseConnect', (span) => {
         if (err) {
             span.setAttribute('databaseAccesible', 'false');
+            span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
             span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
             console.log('Failed to connect to database server');
         } else {
