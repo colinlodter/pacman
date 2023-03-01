@@ -18,7 +18,7 @@ router.use(function timeLog (req, res, next) {
 })
 
 router.get('/list', urlencodedParser, function(req, res, next) {
-    tracer.startActiveSpan('/highscores/list', {
+    tracer.startActiveSpan('/highscores/list', (span) => {
         console.log('[GET /highscores/list]');
         Database.getDb(req.app, function(err, db) {
             if (err) {
@@ -52,7 +52,7 @@ router.get('/list', urlencodedParser, function(req, res, next) {
 
 // Accessed at /highscores
 router.post('/', urlencodedParser, function(req, res, next) {
-    tracer.startActiveSpan('/highscores', {
+    tracer.startActiveSpan('/highscores', (span) => {
         console.log('[POST /highscores] body =', req.body,
                     ' host =', req.headers.host,
                     ' user-agent =', req.headers['user-agent'],
