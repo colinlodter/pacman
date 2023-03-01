@@ -52,7 +52,7 @@ app.use(function(err, req, res, next) {
 });
 
 Database.connect(app, function(err) {
-    tracer.startActiveSpan('DatabaseConnect', (span) => {
+    tracer.startActiveSpan('database.connect', (span) => {
         if (err) {
             span.setAttribute('database.accesible', 'false');
             span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
