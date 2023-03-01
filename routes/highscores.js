@@ -24,11 +24,11 @@ router.get('/list', urlencodedParser, function(req, res, next) {
             if (err) {
                 span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
                 span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
-                span.setAttribute('databaseAccesible', 'false');
+                span.setAttribute('database.accesible', 'false');
                 return next(err);
             }
 
-            span.setAttribute('databaseAccesible', 'true');
+            span.setAttribute('database.accesible', 'true');
 
             // Retrieve the top 10 high scores
             var col = db.collection('highscore');
@@ -67,12 +67,12 @@ router.post('/', urlencodedParser, function(req, res, next) {
             if (err) {
                 span.addEvent('Failed to connect to database server', { 'log.severity': 'error', 'log.message': err });
                 span.setStatus({ code: opentelemetry.SpanStatusCode.ERROR, message: err });
-                span.setAttribute('databaseAccesible', 'false');
+                span.setAttribute('database.accesible', 'false');
                 counter.add(1);
                 return next(err);
             }
 
-            span.setAttribute('databaseAccesible', 'true');
+            span.setAttribute('database.accesible', 'true');
 
             // Insert high score with extra user data
             db.collection('highscore').insertOne({
